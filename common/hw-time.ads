@@ -18,6 +18,8 @@ is
 
    type T is private;
 
+   T_First : constant T;
+
    function Now return T
    with
       Volatile_Function,
@@ -70,6 +72,8 @@ is
 private
 
    type T is new Word64;
+
+   T_First : constant T := T'First;
 
 end HW.Time;
 
