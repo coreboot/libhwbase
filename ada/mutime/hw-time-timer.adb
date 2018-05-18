@@ -17,8 +17,8 @@ with Musinfo;
 with Muschedinfo;
 
 package body HW.Time.Timer
-   with Refined_State => (Timer_State => null,
-                          Abstract_Time => (Sinfo, Sched_Info))
+   with Refined_State => (Timer_State => (Sinfo),
+                          Abstract_Time => (Sched_Info))
 is
    Sinfo_Base_Address : constant := 16#000e_0000_0000#;
    Sinfo_Page_Size    : constant
@@ -27,6 +27,8 @@ is
 
    Sinfo : Musinfo.Subject_Info_Type
    with
+      Volatile,
+      Async_Writers,
       Address => System'To_Address (Sinfo_Base_Address);
 
    Sched_Info : Muschedinfo.Scheduling_Info_Type
@@ -51,9 +53,11 @@ is
       return T (TSC_Schedule_End);
    end Raw_Value_Max;
 
-   function Hz return T is
+   function Hz return T
+   is
+      Khz : constant T := T (Sinfo.TSC_Khz);
    begin
-      return T (Sinfo.TSC_Khz) * 1000;
+      return Khz * 1000;
    end Hz;
 
 end HW.Time.Timer;

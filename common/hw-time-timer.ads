@@ -14,11 +14,12 @@
 
 private package HW.Time.Timer
    with
-      Abstract_State => ((Timer_State with Part_Of => HW.Time.State),
+      Abstract_State => ((Timer_State with
+                           Part_Of => HW.Time.State,
+                           External => Async_Writers),
                          (Abstract_Time with
                            Part_Of => HW.Time.State,
-                           External => Async_Writers)),
-      Initializes => (Timer_State)
+                           External => Async_Writers))
 is
 
    -- Returns the highest point in time that has definitely passed.
@@ -37,6 +38,7 @@ is
 
    function Hz return T
    with
+      Volatile_Function,
       Global => (Input => Timer_State);
 
 end HW.Time.Timer;

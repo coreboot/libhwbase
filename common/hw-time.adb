@@ -34,25 +34,28 @@ is
    with
       Refined_Global => (Input => (Timer.Abstract_Time, Timer.Timer_State))
    is
+      Hz : constant T := Timer.Hz;
       Current : constant T := Timer.Raw_Value_Max;
    begin
-      return Current + (T (US) * Timer.Hz + 999_999) / 1_000_000;
+      return Current + (T (US) * Hz + 999_999) / 1_000_000;
    end US_From_Now;
 
    function MS_From_Now (MS : Natural) return T
    with
       Refined_Global => (Input => (Timer.Abstract_Time, Timer.Timer_State))
    is
+      Hz : constant T := Timer.Hz;
       Current : constant T := Timer.Raw_Value_Max;
    begin
-      return Current + (T (MS) * Timer.Hz + 999) / 1_000;
+      return Current + (T (MS) * Hz + 999) / 1_000;
    end MS_From_Now;
 
    function Now_US return Int64
    with
       Refined_Global => (Input => (Timer.Abstract_Time, Timer.Timer_State))
    is
-      MHz : constant T := Timer.Hz / 1_000_000;
+      Hz : constant T := Timer.Hz;
+      MHz : constant T := Hz / 1_000_000;
       Current : constant T := Timer.Raw_Value_Min;
    begin
       return Int64 (Current and (2 ** 63 - 1))
@@ -65,7 +68,7 @@ is
    with
       Refined_Global => (Input => (Timer.Abstract_Time))
    is
-      Current: T;
+      Current : T;
    begin
       loop
          Current := Timer.Raw_Value_Min;
