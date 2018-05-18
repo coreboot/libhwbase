@@ -251,7 +251,7 @@ is
             Debug_Sink.Put_Char (' ');
             for J in Natural range 8 .. Natural'Min (15, Left)
             loop
-               Put_Word (Word64(Buf (Line_Start + J)), 2, False);
+               Put_Word (Word64 (Buf (Line_Start + J)), 2, False);
                Debug_Sink.Put_Char (' ');
             end loop;
             New_Line;
@@ -272,7 +272,7 @@ is
 
    ----------------------------------------------------------------------------
 
-   Procedure Register_Write_Wait
+   procedure Register_Write_Wait
    is
    begin
       if Register_Write_Delay_Nanoseconds > 0 then

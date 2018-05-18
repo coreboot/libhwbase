@@ -78,8 +78,8 @@ is
 
    procedure Resource_Size (Length : out Natural; Res : Resource)
    is
-      use Type HW.Word16;
-      use Type HW.Word32;
+      use type HW.Word16;
+      use type HW.Word32;
 
       Cmd : Word16;
       Base, Backup : Word32;

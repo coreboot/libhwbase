@@ -37,7 +37,7 @@ package HW.Debug is
    procedure Put_Buffer (Name : String; Buf : in Buffer; Len : in Buffer_Range);
 
    procedure Set_Register_Write_Delay (Value : Word64);
-   Procedure Register_Write_Wait;
+   procedure Register_Write_Wait;
 end HW.Debug;
 
 --  vim: set ts=8 sts=3 sw=3 et:
