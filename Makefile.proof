@@ -11,6 +11,7 @@ SPARKFLAGS += -m
 SPARKFLAGS += --mode=$(PROOF_MODE)
 SPARKFLAGS += --report=fail
 SPARKFLAGS += --warnings=error
+SPARKFLAGS += --no-inlining
 SPARKFLAGS += --prover=z3 --steps=500 --timeout=1	# FIXME: timeout used because steps seems broken
 
 quote-list = $(subst $(space),$(comma),$(patsubst %,"%",$(1)))
