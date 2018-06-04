@@ -19,6 +19,10 @@ hw-$(CONFIG_HWBASE_DIRECT_PCIDEV) += hw-pci-dev.ads
 hw-$(CONFIG_HWBASE_LINUX_PCIDEV) += linux/hw-pci-dev.adb
 hw-$(CONFIG_HWBASE_LINUX_PCIDEV) += hw-pci-dev.ads
 
+hw-$(CONFIG_HWBASE_TIMER_MUTIME) += $(muen-common-path)/musinfo/musinfo.ads
+hw-$(CONFIG_HWBASE_TIMER_MUTIME) += $(muen-common-path)/muschedinfo/muschedinfo.ads
+hw-$(CONFIG_HWBASE_TIMER_MUTIME) += mutime/hw-time-timer.adb
+
 hw-config-ads := $(subst //,/,$(call src-to-obj,,$(dir)/hw-config).ads)
 $(hw-config-ads): $(dir)/hw-config.ads.template $(cnf)
 	printf "    GENERATE   $(patsubst /%,%,$(subst $(obj)/,,$@))\n"
