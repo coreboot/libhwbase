@@ -18,7 +18,8 @@ quote-list = $(subst $(space),$(comma),$(patsubst %,"%",$(1)))
 
 $(name)-exclude-srcs = \
 	$(filter-out \
-		$(sort $(notdir $($(name)-proof) $($(name)-srcs) $($(name)-gens) $($(name)-extra-specs))), \
+		$(sort $(notdir $($(name)-proof) \
+			$($(name)-srcs) $($(name)-gens) $($(name)-extra-specs) $($(name)-extra-gens))), \
 		$(sort $(notdir \
 			$(wildcard $(addsuffix *.ad[sb],$($(name)-proof-dirs))))))
 
@@ -63,7 +64,9 @@ $(libgpr): $$(MAKEFILE_LIST)
 	echo '   for Object_Dir use external ("obj", "build");'	>>$@
 	echo 'end lib$(name);'					>>$@
 
-$(obj)/gnatprove/gnatprove.out: $(gpr) $$($(name)-srcs) $$($(name)-gens) $(obj)/proofmode
+$(obj)/gnatprove/gnatprove.out: $$($(name)-srcs) $$($(name)-gens)
+$(obj)/gnatprove/gnatprove.out: $$($(name)-extra-specs) $$($(name)-extra-gens)
+$(obj)/gnatprove/gnatprove.out: $(gpr) $(obj)/proofmode
 	gnatprove -P$< $(SPARKFLAGS) -Xobj=$(abspath $(obj))
 
 proof:

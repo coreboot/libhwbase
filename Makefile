@@ -190,12 +190,16 @@ $(name)-ada-dirs := $(sort $(dir $(filter %.ads %.adb,$($(name)-srcs) $($(name)-
 # *-srcs. Extract / filter all specification files that have a matching
 # body (.adb) file here (specifications without a body are valid sources
 # in Ada).
-$(name)-extra-specs := \
+# $1 source list
+filter_extra_specs = \
 	$(filter \
-		$(addprefix %/,$(patsubst %.adb,%.ads,$(notdir $(filter %.adb,$($(name)-srcs))))), \
-		$(filter %.ads,$($(name)-srcs) $($(name)-gens)))
+		$(addprefix %/,$(patsubst %.adb,%.ads, \
+			$(notdir $(filter %.adb,$($(name)-srcs) $($(name)-gens))))), \
+		$(filter %.ads,$(1)))
+$(name)-extra-specs := $(call filter_extra_specs,$($(name)-srcs))
 $(name)-srcs := $(filter-out $($(name)-extra-specs),$($(name)-srcs))
-$(name)-gens := $(filter-out $($(name)-extra-specs),$($(name)-gens))
+$(name)-extra-gens := $(call filter_extra_specs,$($(name)-gens))
+$(name)-gens := $(filter-out $($(name)-extra-gens),$($(name)-gens))
 
 $(name)-objs := $(call src-to-obj,,$($(name)-srcs) $($(name)-gens))
 $(name)-alis := $(call src-to-ali,,$($(name)-srcs) $($(name)-gens))
@@ -216,8 +220,8 @@ create_ada_deps = \
 	$(if $(wildcard $(1)),\
 		$(filter \
 			$(addprefix %/,$(shell sed -ne's/^D \([^\t]\+\).*$$/\1/p' $(1) 2>/dev/null)), \
-			$($(name)-srcs) $($(name)-gens) $($(name)-extra-specs)), \
-		$($(name)-gens))
+			$($(name)-srcs) $($(name)-gens) $($(name)-extra-specs) $($(name)-extra-gens)), \
+		$($(name)-gens) $($(name)-extra-gens))
 
 # Adds dependency rules
 # $1 source file
@@ -283,7 +287,7 @@ $(call src-to-obj,,$(filter %.c,$($(name)-srcs))): $(obj)/%.o: %.c
 $(shell mkdir -p $(alldirs))
 
 $(name)-install-srcs = $(sort \
-	$($(name)-extra-specs) $(filter %.ads,$($(name)-srcs) $($(name)-gens)) \
+	$($(name)-extra-specs) $($(name)-extra-gens) $(filter %.ads,$($(name)-srcs) $($(name)-gens)) \
 	$(foreach adb,$(filter %.adb,$($(name)-srcs)), \
 		$(shell grep -q '^U .*\<BN\>' $(call src-to-ali,,$(adb)) 2>/dev/null && echo $(adb))))
 
