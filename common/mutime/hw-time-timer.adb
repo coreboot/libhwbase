@@ -25,10 +25,9 @@ is
      := ((Musinfo.Subject_Info_Type_Size + (16#1000# - 1))
          / 16#1000#) * 16#1000#;
 
-   Sinfo : Musinfo.Subject_Info_Type
+   Sinfo : constant Musinfo.Subject_Info_Type
    with
-      Volatile,
-      Async_Writers,
+      Import,
       Address => System'To_Address (Sinfo_Base_Address);
 
    Sched_Info : Muschedinfo.Scheduling_Info_Type

@@ -15,8 +15,7 @@
 private package HW.Time.Timer
    with
       Abstract_State => ((Timer_State with
-                           Part_Of => HW.Time.State,
-                           External => Async_Writers),
+                           Part_Of => HW.Time.State),
                          (Abstract_Time with
                            Part_Of => HW.Time.State,
                            External => Async_Writers))
@@ -38,7 +37,6 @@ is
 
    function Hz return T
    with
-      Volatile_Function,
       Global => (Input => Timer_State);
 
 end HW.Time.Timer;
