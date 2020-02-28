@@ -22,7 +22,7 @@ binary := $(obj)/$(prefixed-name)$(binary-suffix)
 $(binary):
 
 space :=
-space +=
+space := $(space) $(space)
 comma := ,
 
 strip_quotes = $(strip $(subst ",,$(1)))
