@@ -43,6 +43,8 @@ endif
 CC       = $(CROSS_COMPILE)gcc
 GNATBIND = $(CROSS_COMPILE)gnatbind
 
+GCC_MAJOR = $(shell echo __GNUC__ | $(CC) -E - 2>/dev/null | tail -1)
+
 CFLAGS += -Wuninitialized -Wall -Werror
 CFLAGS += -pipe -g
 CFLAGS += -Wstrict-aliasing -Wshadow
@@ -67,6 +69,9 @@ ADAFLAGS += $(CFLAGS) -gnatA -gnatec=$(gnat-adc) -gnatp
 #  H   Suppress warnings on hiding:
 #      It's too annoying, you run out of ideas for identifiers fast.
 #
+# _R   Suppress warnings for out-of-order record representation clauses:
+#      We reorder fields on purpose.
+#
 #  T   Suppress warnings for tracking of deleted conditional code:
 #      We use static options to select code paths at compile time.
 #
@@ -85,6 +90,7 @@ ADAFLAGS += $(CFLAGS) -gnatA -gnatec=$(gnat-adc) -gnatp
 #      Those messages are annoying. But don't forget to enable those,
 #      if you need the information.
 ADAFLAGS += -gnatwa.eeD.HHTU.U.W.Y
+ADAFLAGS += $(if $(filter 10,$(GCC_MAJOR)),-gnatw_R)
 # Disable style checks for now
 ADAFLAGS += -gnatyN
 
