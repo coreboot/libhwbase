@@ -238,7 +238,7 @@ define add_ada_rule
 $(2) $(3)%.o: %.$(1)
 	@printf "    COMPILE    $$(subst $(obj)/,,$$@)\n"
 	$(CC) \
-		$(if $(4),$(4),$(ADAFLAGS)) \
+		$(if $(4),$(4),$$(ADAFLAGS)) \
 		$(addprefix -I,$($(name)-ada-dirs) $($(name)-extra-incs)) \
 		-c -o $$@ $$<
 endef
