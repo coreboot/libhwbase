@@ -12,7 +12,6 @@
 -- GNU General Public License for more details.
 --
 
-with HW;
 with HW.Time.Timer;
 
 use type HW.Word64;
