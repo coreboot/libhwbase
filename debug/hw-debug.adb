@@ -22,9 +22,15 @@ package body HW.Debug
 with
    SPARK_Mode => Off
 is
-
-   Start_Of_Line : Boolean := True;
-   Register_Write_Delay_Nanoseconds : Word64 := 0;
+   --  Placing the two variables below in the .bss section set them to
+   --  their desired default value which is respectively False and
+   --  0. It helps to integrate the libhwbase library debug package in
+   --  environments where global initialized variables are not
+   --  supported such as coreboot romstage.
+   Middle_Of_Line : Boolean;
+   pragma Linker_Section (Middle_Of_Line, ".bss");
+   Register_Write_Delay_Nanoseconds : Word64;
+   pragma Linker_Section (Register_Write_Delay_Nanoseconds, ".bss");
 
    type Base_Range is new Positive range 2 .. 16;
    type Width_Range is new Natural range 0 .. 64;
@@ -43,8 +49,8 @@ is
    is
       Now_US : Int64;
    begin
-      if Start_Of_Line then
-         Start_Of_Line := False;
+      if not Middle_Of_Line then
+         Middle_Of_Line := True;
          Now_US := Time.Now_US;
          Debug_Sink.Put_Char ('[');
          Do_Put_Int64 ((Now_US / 1_000_000) mod 1_000_000);
@@ -71,7 +77,7 @@ is
    procedure New_Line is
    begin
       HW.Debug_Sink.New_Line;
-      Start_Of_Line := True;
+      Middle_Of_Line := False;
    end New_Line;
 
    ----------------------------------------------------------------------------
