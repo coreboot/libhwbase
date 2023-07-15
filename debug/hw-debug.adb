@@ -16,7 +16,6 @@ with HW.Time;
 with HW.Debug_Sink;
 
 use type HW.Word64;
-use type HW.Int64;
 
 package body HW.Debug
 with
