@@ -43,8 +43,6 @@ endif
 CC       = $(CROSS_COMPILE)gcc
 GNATBIND = $(CROSS_COMPILE)gnatbind
 
-GCC_MAJOR = $(shell echo __GNUC__ | $(CC) -E - 2>/dev/null | tail -1)
-
 CFLAGS += -Wuninitialized -Wall -Werror
 CFLAGS += -pipe -g
 CFLAGS += -Wstrict-aliasing -Wshadow
@@ -89,8 +87,7 @@ ADAFLAGS += $(CFLAGS) -gnatA -gnatec=$(gnat-adc) -gnatp
 # .Y   Disable information messages for why package spec needs body:
 #      Those messages are annoying. But don't forget to enable those,
 #      if you need the information.
-ADAFLAGS += -gnatwa.eeD.HHTU.U.W.Y
-ADAFLAGS += $(if $(filter 10,$(GCC_MAJOR)),-gnatw_R)
+ADAFLAGS += -gnatwa.eeD.HHTU.U.W.Y_R
 # Disable style checks for now
 ADAFLAGS += -gnatyN
 
