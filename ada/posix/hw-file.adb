@@ -33,7 +33,9 @@ package body HW.File is
       off   : Word32;
       mode  : Word32;
       copy  : int)
-      return int;
+      return int
+   with
+      SPARK_Mode => Off;
    pragma Import (C, c_map, "hw_file_map");
 
    procedure Map
