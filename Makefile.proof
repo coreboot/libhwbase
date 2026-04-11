@@ -97,12 +97,13 @@ full: proof
 allconfigs = $(wildcard configs/*)
 allconfigs-targets = $(addprefix allconfigs-,$(notdir $(allconfigs)))
 
+$(allconfigs-targets): jobs=1
 $(allconfigs-targets): allconfigs-%: configs/%
 	rm -rf proof-allconfigs/$* $(name)_$*.gpr
 	mkdir -p proof-allconfigs/$*
 	echo "$(PROOF_MODE)" >proof-allconfigs/$*/proofmode
 	$(call filter-output, \
-	  $(MAKE) obj=proof-allconfigs/$* cnf=configs/$* gpr=$(name)_$*.gpr jobs=1 \
+	  $(MAKE) obj=proof-allconfigs/$* cnf=configs/$* gpr=$(name)_$*.gpr jobs=$(jobs) \
 		  proof-allconfigs/$*/gnatprove/gnatprove.out, \
 	  sed 's/^[^[:space:]]\+:[0-9]\+:[0-9]\+:/$*::&/')
 
