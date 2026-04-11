@@ -64,11 +64,21 @@ $(libgpr): $$(MAKEFILE_LIST)
 	echo '   for Object_Dir use external ("obj", "build");'	>>$@
 	echo 'end lib$(name);'					>>$@
 
+# We want to filter gnatprove's command-line output through `sed`,
+# and *also* capture its return value. Not that easy, we'll pipe the
+# return code through file descriptor #3.
+#
+# 1: command w/ return value
+# 2: filter command, ignore return value
+#
+filter-output = { { { { $(1); } 2>&1; echo $$? >&3; } | $(2) >&2; } 3>&1 | { read ret; exit $${ret}; }; } 2>&1
+
 $(obj)/gnatprove/gnatprove.out: $$($(name)-srcs) $$($(name)-gens)
 $(obj)/gnatprove/gnatprove.out: $$($(name)-extra-specs) $$($(name)-extra-gens)
 $(obj)/gnatprove/gnatprove.out: $(gpr) $(obj)/proofmode
-	gnatprove -P$< $(SPARKFLAGS) -Xobj=$(abspath $(obj))
-
+	$(call filter-output, \
+	  gnatprove -P$< $(SPARKFLAGS) -Xobj=$(abspath $(obj)), \
+	  sed $(foreach file,$^,-e 's|$(notdir $(file)):[0-9]\+:[0-9]\+:|$(dir $(file))&|'))
 proof:
 	if [ "$(PROOF_MODE)" != "$$(cat $(obj)/proofmode 2>/dev/null)" ]; then \
 		echo "$(PROOF_MODE)" >$(obj)/proofmode; \
@@ -91,7 +101,10 @@ $(allconfigs-targets): allconfigs-%: configs/%
 	rm -rf proof-allconfigs/$* $(name)_$*.gpr
 	mkdir -p proof-allconfigs/$*
 	echo "$(PROOF_MODE)" >proof-allconfigs/$*/proofmode
-	$(MAKE) obj=proof-allconfigs/$* cnf=configs/$* gpr=$(name)_$*.gpr jobs=1 proof-allconfigs/$*/gnatprove/gnatprove.out
+	$(call filter-output, \
+	  $(MAKE) obj=proof-allconfigs/$* cnf=configs/$* gpr=$(name)_$*.gpr jobs=1 \
+		  proof-allconfigs/$*/gnatprove/gnatprove.out, \
+	  sed 's/^[^[:space:]]\+:[0-9]\+:[0-9]\+:/$*::&/')
 
 proof-allconfigs: $(allconfigs-targets)
 
