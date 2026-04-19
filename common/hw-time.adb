@@ -54,11 +54,11 @@ is
       Refined_Global => (Input => (Timer.Abstract_Time, Timer.Timer_State))
    is
       Hz : constant T := Timer.Hz;
-      MHz : constant T := Hz / 1_000_000;
+      MHz : constant T := (if Hz >= 1_000_000 then Hz / 1_000_000 else 1);
       Current : constant T := Timer.Raw_Value_Min;
+      type Word63 is mod 2 ** 63;
    begin
-      return Int64 (Current and (2 ** 63 - 1))
-               / Int64 (if MHz = 0 then T'(1) else MHz);
+      return Int64 (Word63 ((Current and 2 ** 63 - 1) / MHz));
    end Now_US;
 
    ----------------------------------------------------------------------------
